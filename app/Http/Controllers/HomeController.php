@@ -12,4 +12,10 @@ class HomeController extends Controller
         return view('home', ['comments' => $comments]);
     }
 
+    public function addComment()
+    {
+        $data = request()->post();
+        Comment::moderate($data['text']);
+        return Comment::create($data);
+    }
 }
