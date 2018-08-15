@@ -41,7 +41,7 @@ be on your merry way. Wait, did I tell you this is a dummy post?
     <form onsubmit="addComment(event);">
         <input type="text" placeholder="Add a comment" name="text" id="text" required>
         <input type="text" placeholder="Your name" name="username" id="username" required>
-        <button>Comment</button>
+        <button id="addCommentBtn">Comment</button>
     </form>
     <div class="alert" id="alert" style="display: none;"></div>
     <br>
@@ -62,11 +62,12 @@ be on your merry way. Wait, did I tell you this is a dummy post?
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 <script>
-    let addComment = function (event) {
-        function displayComment(data) {
-            let $comment = $('<div>').text(data['text']).prepend($('<small>').html(data['username'] + "<br>"));
-            $('#comments').prepend($comment);
-        }
+    function displayComment(data) {
+        let $comment = $('<div>').text(data['text']).prepend($('<small>').html(data['username'] + "<br>"));
+        $('#comments').prepend($comment);
+    }
+
+    function addComment (event) {
 
         function showAlert(message) {
             let $alert = $('#alert');
@@ -75,6 +76,7 @@ be on your merry way. Wait, did I tell you this is a dummy post?
         }
 
         event.preventDefault();
+        $('#addCommentBtn').attr('disabled', 'disabled');
         let data = {
             text: $('#text').val(),
             username: $('#username').val(),
@@ -84,11 +86,13 @@ be on your merry way. Wait, did I tell you this is a dummy post?
             credentials: 'same-origin',
             headers: {
                 'content-type': 'application/json',
-                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
+                'x-csrf-token': $('meta[name="csrf-token"]').attr('content'),
+                'x-socket-id': window.socketId
             },
             method: 'POST',
             mode: 'cors',
         }).then(response => {
+            $('#addCommentBtn').removeAttr('disabled');
             if (response.ok) {
                 displayComment(data);
             } else {
@@ -97,5 +101,18 @@ be on your merry way. Wait, did I tell you this is a dummy post?
         })
     }
 </script>
+
+<script src="https://js.pusher.com/4.2/pusher.min.js"></script>
+<script>
+    var socket = new Pusher("your-app-key", {
+        cluster: 'your-app-cluster',
+    });
+    socket.connection.bind('connected', function() {
+        window.socketId = socket.connection.socket_id;
+    });
+    socket.subscribe('comments')
+        .bind('new-comment',displayComment);
+</script>
+
 </body>
 </html>

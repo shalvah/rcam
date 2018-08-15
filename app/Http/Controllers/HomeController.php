@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use Pusher\Laravel\Facades\Pusher;
 
 class HomeController extends Controller
 {
     public function home()
     {
-        $comments = Comment::all();
+        $comments = Comment::orderBy('id desc')->get();
         return view('home', ['comments' => $comments]);
     }
 
@@ -16,6 +17,8 @@ class HomeController extends Controller
     {
         $data = request()->post();
         Comment::moderate($data['text']);
-        return Comment::create($data);
+        $comment = Comment::create($data);
+        Pusher::trigger('comments', 'new-comment', $comment, request()->header('X-Socket-Id'));
+        return $comment;
     }
 }
