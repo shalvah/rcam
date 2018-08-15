@@ -95,6 +95,7 @@ be on your merry way. Wait, did I tell you this is a dummy post?
             $('#addCommentBtn').removeAttr('disabled');
             if (response.ok) {
                 displayComment(data);
+                showAlert('Comment posted!');
             } else {
                 showAlert('Your comment was not approved for posting. Please be nicer :)');
             }
