@@ -11,7 +11,7 @@ class Comment extends Model
 
     public static function moderate($comment)
     {
-        $response = Zttp::post("https://commentator.now.sh", [
+        $response = Zttp::withoutVerifying()->post("https://commentator.now.sh", [
             'comment' => $comment,
             'limit' => -3,
         ])->json();
