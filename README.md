@@ -26,11 +26,23 @@ PUSHER_APP_KEY=your-app-key
 PUSHER_APP_SECRET=your-app-secret
 PUSHER_APP_CLUSTER=your-app-cluster
 ```
+
+Also replace the stubs in `resources/home.blade.php` with your respective Pusher credentials:
+
+```js
+    var socket = new Pusher("your-app-key", {
+        cluster: 'your-app-cluster',
+    });
+```
+
 Create a file called `database.sqlite` in the `database` folder of your app.
 
 Then:
 
 ```bash
+# run database migrations
+php artisan migrate
+
 # generate an application key
 php artisan key:generate
 
