@@ -3,7 +3,7 @@
 Demo implementation of realtime site comments with auto moderation using Pusher Channels
 
 
-[View tutorial]()
+[View tutorial](https://pusher.com/tutorials/live-comments-automod-laravel)
 
 ## Prerequisites
 - PHP >= 7.1.3
